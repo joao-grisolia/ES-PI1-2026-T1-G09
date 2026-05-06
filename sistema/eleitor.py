@@ -5,7 +5,6 @@ from funcoes.chaveDeAcesso import gerar_chave_acesso
 import funcoes.criptografia as criptografia
 import funcoes.validacaoCPF as validacaoCPF
 from funcoes import ascii as ascii
-import sistema.adm as adm
 from funcoes.validacaoCPF import primeiros_quatro_digitos
 from database.conexao import conectar
 import mysql.connector
@@ -36,6 +35,10 @@ from funcoes.validacao_TituloEleitor import validar_titulo_eleitor
     um eleitor buscar outro ou listar tlgd? entao faz essa validao antes
     igual no candidato que tem essa validacao de adm    
 '''
+
+conexao = conectar()
+cursor = conexao.cursor()
+
 def gestao_eleitores():
             os.system('cls')
             
@@ -43,7 +46,7 @@ def gestao_eleitores():
                 Digite o número da opção desejada:
 
                 1. Cadastrar Eleitor
-                2. Editar/Remover Eleitor
+                2. Editar Eleitor
                 3. Buscar Eleitor
                 4. Listar Eleitores
                 5. Voltar
@@ -152,13 +155,41 @@ def gestao_eleitores():
                 elif (n == 2):
                     os.system('cls')
                     def editar_remover_eleitor():
-                        adm.login_adm_gerenciamento()
+                        
+                        nome = str(input("Digite o nome completo do eleitor que deseja editar: "))
+                        sql = 'SELECT * FROM eleitores'
+                        cursor.execute(sql)
+                        result = cursor.fetchall()
+
+                        encontrado = False
+
+                        for eleitor in result:
+                            if nome == eleitor[2]:
+                                encontrado = True
+
+                                print("\nEleitor encontrado!")
+
+                                nome = str(input("Digite o novo nome para o candidato: "))
+                                sql = 'UPDATE eleitores SET nome_completo = %s WHERE id = %s'
+                                values = (nome, eleitor[0])
+
+                                cursor.execute(sql, values)
+                                conexao.commit()
+
+                                n = input("\nEleitor alterado com sucesso. Pressione ENTER para voltar.\n")
+                                gestao_eleitores()
+                                break
+
+                        if not encontrado:
+                            n = input("\nEleitor não encontrado. Pressione ENTER para voltar.\n")
+                            gestao_eleitores()
+
                     editar_remover_eleitor()
 
                 elif (n == 3):
                     os.system('cls')
                     def buscar_eleitores():
-                        adm.login_adm_gerenciamento()
+
                         conexao = conectar()
                         cursor = conexao.cursor()
                         
@@ -182,7 +213,6 @@ def gestao_eleitores():
                     os.system('cls')
 
                     def listar_eleitores():
-                        adm.login_adm_gerenciamento()
                         conexao = conectar()
                         cursor = conexao.cursor()
                         
