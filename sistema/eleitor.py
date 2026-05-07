@@ -14,7 +14,7 @@ from funcoes.validacao_TituloEleitor import validar_titulo_eleitor
 conexao = conectar()
 cursor = conexao.cursor()
 
-def gestao_eleitores():
+def gestao_eleitores(conn):
             os.system('cls')
             
             print('''
@@ -154,8 +154,9 @@ def gestao_eleitores():
 
                 elif (n == 2):
                     os.system('cls')
-                    def editar_remover_eleitor():
+                    def editar_remover_eleitor(conn):
                         
+                        cursor = conn.cursor()
                         nome = str(input("Digite o nome completo do eleitor que deseja editar: "))
                         sql = 'SELECT * FROM eleitores'
                         cursor.execute(sql)
@@ -174,24 +175,23 @@ def gestao_eleitores():
                                 values = (nome, eleitor[0])
 
                                 cursor.execute(sql, values)
-                                conexao.commit()
+                                conn.commit()
 
                                 n = input("\nEleitor alterado com sucesso. Pressione ENTER para voltar.\n")
-                                gestao_eleitores()
+                                gestao_eleitores(conn)
                                 break
 
                         if not encontrado:
                             n = input("\nEleitor não encontrado. Pressione ENTER para voltar.\n")
-                            gestao_eleitores()
+                            gestao_eleitores(conn)
 
-                    editar_remover_eleitor()
+                    editar_remover_eleitor(conn)
 
                 elif (n == 3):
                     os.system('cls')
-                    def buscar_eleitores():
+                    def buscar_eleitores(conn):
 
-                        conexao = conectar()
-                        cursor = conexao.cursor()
+                        cursor = conn.cursor()
                         
                         nome = str(input("\nDigite o nome do eleitor: ")).strip()
                         sql = "SELECT * FROM eleitores WHERE LOWER(nome_completo) LIKE %s"

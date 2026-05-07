@@ -28,11 +28,11 @@ def conectar():
     Depois cria na pasta raiz do projeto
     um arquivo .env com as seguintes informações
     
-    DB_HOST=sql.freedb.tech
-    DB_PORT=3306
-    DB_USER=freedb_prandi1
+    DB_HOST=pi-projeto-pi.j.aivencloud.com
+    DB_PORT=15817
+    DB_USER=avnadmin
     DB_PASSWORD=coloca pwd aqui
-    DB_NAME=freedb_projetoPI
+    DB_NAME=projetoPI
     
     Só trocar os valores da USEr e PASSWORD para o certo
     Como é um repositorio publico e estamos usando um database remoto

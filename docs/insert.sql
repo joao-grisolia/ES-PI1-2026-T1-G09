@@ -1,5 +1,5 @@
 --USE projeto_teste;
-USE freedb_projetoPI;
+USE projetoPI;
 INSERT INTO eleitores (chave_acesso, nome_completo, titulo_eleitor, cpf_criptografado, mesario, status_voto) 
 VALUES 
 ('JOD1234', 'João do Grau', '123456789012', '12312312312', 0, 0),
