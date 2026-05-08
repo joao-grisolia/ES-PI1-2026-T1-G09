@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 
 # -- Registra um evento no arquivo de log de ocorrência.
 #
@@ -24,7 +24,7 @@ def exibir_logs():
 
     try:
         with open("log_ocorrencias.txt","r", encoding="utf-8") as arq:
-            print(arquivo.read())
+            print(arq.read())
     
     except FileNotFoundError:
         print("Nenhum log encontrado. Tente novamente.")
