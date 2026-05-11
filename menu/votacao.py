@@ -8,6 +8,7 @@ from sistema.voto import verificar_voto
 from sistema.voto import adicionar_voto
 from funcoes.validacaoCPF import validar_cpf, limpar_cpf
 import funcoes.resultado as resultado
+from funcoes import registrar_log
 
 def votacao(conn):
     os.system('cls')
@@ -52,6 +53,7 @@ def votacao(conn):
                         elif (n == 2):
                             os.system('cls')
                             while not verificarMesario(conn):
+                                registrar_log("ALERTA", "Tentativa de acesso negado")
                                 print("CPF, Chave de acesso ou Título inválidos. Tente novamente.")
                                 input("Pressione ENTER para voltar")
                                 return votacao(conn)                  
@@ -73,6 +75,10 @@ def votacao(conn):
 
                                     os.system('cls')
                                     statusMesario.abrirMesario(conn)
+
+                                    registrar_log( 
+                                         "ABERTURA",        
+                                         "Votação iniciada com sucesso. Total de votos zerado.")
                                     input("Pressione ENTER para voltar.")
                                     return votacao(conn)
 
@@ -221,6 +227,7 @@ def votacao(conn):
                                 id_eleitor = login(conn) # Guardando o valor de retorno da função login
                                 status_voto = verificar_voto(id_eleitor, conn) #Guardando o valor de retorno da função verificar_voto e utilizando o parâmetro da variável acima
                                 if status_voto == 1: # Verifica se o status de voto do eleitor é igual a 1
+                                    registrar_log("ALERTA", "Eleitor tentou votar novamente") # Registra no log a tentativa de voto novamente
                                     print("Você ja votou!")
                                     input("Pressione ENTER para voltar.")
                                     return menu_urna(conn)
@@ -243,6 +250,7 @@ def votacao(conn):
                         elif (n == 3):
                             os.system('cls')
                             while not verificarMesario(conn):
+                                registrar_log("ALERTA", "Tentativa de acesso negado")
                                 print("CPF, Chave de acesso ou Título inválidos. Tente novamente.")
                                 input("Pressione ENTER para voltar")
                                 return votacao(conn)                  
@@ -338,6 +346,7 @@ def verificarMesario(conn):
 
     cpf_crip = str(input("Digite seu CPF: "))
     while not validar_cpf(cpf_crip):
+                registrar_log("ALERTA", "Tentativa de acesso negado") # Registra no log a tentativa de acesso negado
                 print("CPF inválido. Tente novamente.")
                 cpf_crip = str(input("Digite seu CPF: "))
     cpf_crip = limpar_cpf(cpf_crip)

@@ -10,6 +10,7 @@ import mysql.connector
 from funcoes.criptografia import criptografia
 from funcoes.validacaoCPF import validar_cpf, limpar_cpf
 from funcoes.validacao_TituloEleitor import validar_titulo_eleitor
+from funcoes import registrar_log
 
 conexao = conectar()
 cursor = conexao.cursor()

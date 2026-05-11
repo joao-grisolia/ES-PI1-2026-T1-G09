@@ -23,3 +23,4 @@ def menu(conn):
         votacao.votacao(conn)
     elif n == 3:
         print("Sistema encerrado")
+        

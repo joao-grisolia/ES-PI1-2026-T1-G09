@@ -13,7 +13,7 @@ def registrar_log(tipo_evento,mensagem):
     linha_terminal = f"[{data_hora}] {tipo_evento}: {mensagem}\n"
 
     with open("log_ocorrencias.txt", "a", encoding="utf-8") as arq:
-        arq.write(linha)
+        arq.write(linha_terminal)
 
 # -- Exibe todos os logs que ocorreram durante o processo de eleição.
 #       

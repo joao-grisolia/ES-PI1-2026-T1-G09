@@ -7,6 +7,7 @@ from funcoes.descriptografia import descriptografia
 from funcoes.validacaoCPF import validar_cpf, limpar_cpf, primeiros_quatro_digitos
 import mysql.connector
 from datetime import datetime
+from funcoes import registrar_log   
 
 
 '''
@@ -24,6 +25,7 @@ def login(conn):
 
         cpf = str(input("Digite os 4 primeiros dígitos do CPF: "))
         while not cpf.isdigit() or len(cpf) != 4:
+            registrar_log("ALERTA", "Tentativa de acesso negado")
             print("Digite exatamente 4 números.")
             cpf = input("Digite os 4 primeiros dígitos do CPF: ")
         cpf = limpar_cpf(cpf)
@@ -44,8 +46,9 @@ def login(conn):
             cpf_descriptografado = descriptografia(eleitor[1])
             if primeiros_quatro_digitos(cpf_descriptografado) == cpf:
                 return eleitor[0]  # id do eleitor
-            
+           
         print("CPF, TÍTULO ou CHAVE inválidos. Tente novamente.") # Se retornar nada, significa que o CPF, TÍTULO ou CHAVE estão invalidas
+        registrar_log("ALERTA", "Tentativa de acesso negado") # Registra no log a tentativa de acesso negado
         return login(conn) # Retorna pra função novamente
 
     except ValueError:
@@ -159,6 +162,7 @@ def adicionar_voto(eleitor_id, conn): # Criação de uma função com um parâme
 
             print("Voto registrado com sucesso!")
             print("Protocolo de votação:", protocolo) # Mostra o protocolo de votação para o eleitor
+            registrar_log("SUCESSO", f"Eleitor com ID {eleitor_id} votou com o protocolo {protocolo}") # Registra no log o sucesso do voto
 
             cursor.execute('''
                 UPDATE eleitores SET status_voto = %s WHERE id = %s
