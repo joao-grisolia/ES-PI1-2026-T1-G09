@@ -162,7 +162,7 @@ def adicionar_voto(eleitor_id, conn): # Criação de uma função com um parâme
 
             print("Voto registrado com sucesso!")
             print("Protocolo de votação:", protocolo) # Mostra o protocolo de votação para o eleitor
-            registrar_log("SUCESSO", f"Eleitor com ID {eleitor_id} votou com o protocolo {protocolo}") # Registra no log o sucesso do voto
+            registrar_log("Voto realizado com sucesso!") # Registra no log o sucesso do voto
 
             cursor.execute('''
                 UPDATE eleitores SET status_voto = %s WHERE id = %s
