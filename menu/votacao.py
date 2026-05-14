@@ -257,7 +257,7 @@ def votacao(conn):
                                 id_eleitor = login(conn) # Guardando o valor de retorno da função login
                                 status_voto = verificar_voto(id_eleitor, conn) #Guardando o valor de retorno da função verificar_voto e utilizando o parâmetro da variável acima
                                 if status_voto == 1: # Verifica se o status de voto do eleitor é igual a 1
-                                    registrar_log("ALERTA", "Eleitor tentou votar novamente") # Registra no log a tentativa de voto novamente
+                                    registrar_log("ALERTA", "Tentativa de voto duplo") # Registra no log a tentativa de voto novamente
                                     print("Você ja votou!")
                                     input("Pressione ENTER para voltar.")
                                     return menu_urna(conn)

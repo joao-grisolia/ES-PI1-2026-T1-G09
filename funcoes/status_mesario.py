@@ -8,14 +8,14 @@ def abrirMesario(conn):
     zerezima(conn)
 
     print("A urna foi aberta.")
-    registrar_log("ABERTURA", "A urna foi aberta") # Registra no log a abertura da urna
+    registrar_log("ABERTURA", "Votação iniciada com sucesso. Total de votos zerados.") # Registra no log a abertura da urna
 
 def fecharMesario():
     global status_mesario
     status_mesario = 0
 
     print("A urna foi fechada.")
-    registrar_log("ENCERRAMENTO", "A urna foi fechada") # Registra no log o encerramento da urna
+    registrar_log("ENCERRAMENTO", "Votação finalizada com sucesso.") # Registra no log o encerramento da urna
 
 
 def status_global():
