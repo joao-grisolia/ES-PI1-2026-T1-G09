@@ -301,10 +301,29 @@ def votacao(conn):
                                 if (n == 1):
 
                                     os.system('cls')
-                                    statusMesario.fecharMesario()
-                                    input("Pressione ENTER para voltar.")
-                                    return votacao(conn)
-
+                                    confirmacao = input("Tem certeza que deseja fechar a urna? (s/n): ")
+                                    if confirmacao.lower() == 'n':
+                                        print("Encerramento da urna cancelado!")
+                                        input("Pressione ENTER para voltar.")
+                                        return menu_urna(conn)
+                                    
+                                    elif confirmacao.lower() == 's':
+                                        print("Dupla confirmação: Digite novamente sua chave de acesso para fechar a urna.")
+                                        if ConfirmarChaveMesario(conn):
+                                            statusMesario.fecharMesario()
+                                            registrar_log("ENCERRAMENTO", "Votação finalizada com sucesso.")
+                                            input("Pressione ENTER para voltar.")
+                                            return votacao(conn)
+                                        else:
+                                            registrar_log("ALERTA", "Tentativa de acesso negado")
+                                            print("Chave de acesso invalida! Tente novamente.")
+                                            input("Pressione ENTER para voltar")
+                                            return menu_urna(conn)
+                                    else:
+                                        print("Opção inválida. Retornando ao menu da urna.")
+                                        input("Pressione ENTER para continuar.")
+                                        return menu_urna(conn)
+                                    
                                 elif (n == 2):
                                     return menu_urna(conn)
 
@@ -421,4 +440,16 @@ def verificarMesario(conn):
     resultado = cursor.fetchone()
     cursor.close() 
     
+    return resultado[0] if resultado else None
+
+def ConfirmarChaveMesario(conn):
+    chave = input("Digite novamente a chave de acesso do mesário: ")
+    chave_criptografada = criptografia(chave)
+
+    cursor = conn.cursor()
+    cursor.execute('SELECT mesario FROM eleitores WHERE chave_acesso = %s', (chave_criptografada,))
+
+    resultado = cursor.fetchone()
+    cursor.close()
+
     return resultado[0] if resultado else None
