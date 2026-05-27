@@ -16,6 +16,19 @@ conexao = conectar()
 cursor = conexao.cursor()
 
 def gestao_eleitores(conn):
+    """
+            Esta função exibe um menu para a gestão de eleitores, permitindo ao usuário escolher entre cadastrar um novo eleitor,
+            editar ou remover um eleitor existente, buscar eleitores por nome, listar todos os eleitores ou voltar para o menu de gerenciamento.
+            A função interage com o banco de dados MySQL para realizar as operações necessárias, como verificar duplicidade de CPF e título de eleitor,
+            e inserir novos registros na tabela de eleitores.
+
+            Args:
+                conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+            Returns:
+                None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console. 
+
+    """
     os.system('cls')
     time.sleep(0.5)
     
@@ -58,6 +71,19 @@ def gestao_eleitores(conn):
         gestao_eleitores(conn)
 
 def cadastrar_eleitor(conn):
+    """
+    Esta função permite cadastrar um novo eleitor no sistema, solicitando ao usuário informações como nome completo,
+    CPF, título de eleitor e se atuará como mesário. A função valida o CPF e o título de eleitor,
+    verifica se já existem registros com o mesmo CPF ou título no banco de dados, e, se tudo estiver correto,
+    insere um novo registro na tabela de eleitores com as informações fornecidas.
+
+    Args:
+        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console. 
+
+    """
     os.system('cls')
     time.sleep(0.5)
     nome_completo = str(input("Digite seu nome completo: "))
@@ -181,6 +207,18 @@ def cadastrar_eleitor(conn):
         gestao_eleitores(conn)
 
 def editar_remover_eleitor(conn):
+    """
+    Esta função permite editar as informações de um eleitor existente no sistema. O usuário é solicitado a fornecer o nome completo do eleitor que deseja editar,
+    e a função consulta o banco de dados MySQL para encontrar um eleitor com o nome correspondente. 
+    Se o eleitor for encontrado, o usuário pode inserir um novo nome para o eleitor, e a função atualiza o registro no banco de dados com o novo nome fornecido.
+
+    Args:
+        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console.
+
+    """
     os.system('cls')
     time.sleep(0.5)
     cursor = conn.cursor()
@@ -215,6 +253,18 @@ def editar_remover_eleitor(conn):
         gestao_eleitores(conn)
 
 def buscar_eleitores(conn):
+    """
+        Esta função permite buscar eleitores no sistema com base em um nome fornecido pelo usuário. 
+        Ela consulta o banco de dados MySQL para encontrar eleitores cujo nome completo contenha a string de busca,
+        e exibe os resultados formatados no console.
+
+        Args:
+            conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+        Returns:
+            None: A função não retorna nenhum valor, apenas exibe os resultados no console. 
+
+    """
     os.system('cls')
     time.sleep(0.5)
     cursor = conn.cursor()
@@ -236,6 +286,16 @@ def buscar_eleitores(conn):
     print('-' * 150)
 
 def listar_eleitores(conn):
+    """
+    Esta função consulta o banco de dados para obter uma lista de todos os eleitores registrados em um sistema eleitoral, exibindo suas informações no console.
+
+    Args:
+        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console.
+
+    """
     os.system('cls')
     time.sleep(0.5)
     cursor = conn.cursor()

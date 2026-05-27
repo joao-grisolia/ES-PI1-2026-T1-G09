@@ -19,6 +19,18 @@ from funcoes.log_ocorrencia import registrar_log
 '''
 
 def login(conn):
+    """
+    Esta função realiza o processo de login para um eleitor em um sistema eleitoral, solicitando informações de identificação
+    e verificando-as contra os registros armazenados em um banco de dados MySQL.
+
+    Args:
+        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        int: O ID do eleitor correspondente às credenciais fornecidas, caso o login seja bem-sucedido.
+        Se as credenciais forem inválidas ou ocorrer um erro, a função pode retornar None ou chamar a si mesma para tentar novamente.
+
+    """
     try:
         time.sleep(0.5)
         cursor = conn.cursor() # Cria um cursor pra fazer as mudanças
@@ -55,6 +67,19 @@ def login(conn):
         cursor.close() # Fecha o cursor
 
 def verificar_voto(eleitor_id, conn): # Criação de uma função com um parâmetro
+    """
+    Esta função permite verificar o status do voto de um eleitor. Ela consulta o banco de dados para obter o status do voto do eleitor com base em seu ID
+    e retorna essa informação.
+
+    Args:
+        eleitor_id (int): O ID do eleitor cujo status do voto se deseja verificar.
+        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        int: O status do voto do eleitor, caso o eleitor seja encontrado.
+        None: Se o eleitor não for encontrado ou ocorrer um erro.
+
+    """
 
     try:
         cursor = conn.cursor() # Criação do cursor para modificação do banco
@@ -74,6 +99,22 @@ def verificar_voto(eleitor_id, conn): # Criação de uma função com um parâme
         cursor.close()
 
 def adicionar_voto(eleitor_id, conn): # Criação de uma função com um parâmetro do id do eleitor
+    """
+    Esta função permite a um eleitor adicionar um voto para um candidato específico em um sistema eleitoral.
+    Ela interage com o usuário por meio do console para obter o número do candidato escolhido,
+    exibe as informações do candidato selecionado e solicita a confirmação do voto.
+    Se o voto for confirmado, a função registra o voto no banco de dados, gera um protocolo de votação criptografado
+    e atualiza o status do eleitor para indicar que ele já votou.
+
+    Args:
+        eleitor_id (int): O ID do eleitor que deseja adicionar o voto.
+        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: A função não retorna nenhum valor, mas realiza várias operações, como interagir com o usuário, consultar e modificar o banco de dados,
+        e registrar logs de ocorrências.
+
+    """
     try:
         time.sleep(0.5)
         cursor = conn.cursor() # Cria um cursor para modificação no banco
