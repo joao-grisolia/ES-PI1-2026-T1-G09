@@ -4,6 +4,18 @@ import menu.menu_principal as menu
 import menu.gerenciamento as gerenciamento
 
 def gestao_candidatos(conn):
+            """
+            Esta função exibe um menu de opções para gerenciar os candidatos em um sistema eleitoral. 
+            O usuário pode escolher entre cadastrar, editar, buscar ou listar candidatos, ou voltar ao menu principal. 
+            A função utiliza uma conexão ativa com um banco de dados MySQL para realizar as operações necessárias.
+
+            Args:
+                conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+            Returns:
+                None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console. 
+
+            """
             os.system('cls')
             time.sleep(0.5)
             print('''
@@ -47,6 +59,19 @@ def gestao_candidatos(conn):
 # implementar a verificação para não adicionar
 # um candidato com o mesmo número e partido...
 def cadastrar_candidato(conn):
+    """
+    Esta função permite ao usuário cadastrar um novo candidato em um sistema eleitoral. 
+    O usuário é solicitado a fornecer o nome, número de votação, partido e opcionalmente uma foto ASCII do candidato.
+    A função realiza validações para garantir que a foto ASCII seja adequada e, em seguida,
+    insere os dados do candidato no banco de dados MySQL.
+
+    Args:
+        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console. 
+
+    """ 
     try:
         cursor = conn.cursor()
         os.system('cls')
@@ -151,6 +176,19 @@ def cadastrar_candidato(conn):
     gestao_candidatos(conn)
 
 def editar_candidato(conn):
+    """
+    Esta função permite ao usuário editar as informações de um candidato existente em um sistema eleitoral.
+    O usuário é solicitado a fornecer o nome do candidato que deseja editar. Se o candidato for encontrado, suas informações atuais são exibidas,
+    e o usuário pode inserir um novo nome, número de votação e partido para o candidato.
+    A função então atualiza as informações do candidato no banco de dados MySQL.
+
+    Args:
+        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console.  
+
+    """
     try:
         time.sleep(0.5)
         cursor = conn.cursor()
@@ -203,6 +241,22 @@ def editar_candidato(conn):
         cursor.close()
 
 def buscar_candidato(conn):
+    """
+        Esta função permite ao usuário buscar um candidato específico em um sistema eleitoral, utilizando o número do partido como critério de busca.
+        O usuário é solicitado a inserir o número do partido do candidato que deseja encontrar.
+        A função então consulta o banco de dados MySQL para obter uma lista de todos os candidatos 
+        e verifica se algum deles possui o número de partido correspondente.
+        Se um candidato for encontrado, suas informações são exibidas no console, incluindo o nome, número e partido,
+        bem como uma foto ASCII associada, se disponível. Caso nenhum candidato seja encontrado com o número de partido fornecido,
+        uma mensagem informando que nenhum candidato foi encontrado é exibida.
+
+        Args:
+            conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+        Returns:
+            None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console.  
+
+    """
     try:
         time.sleep(0.5)
         cursor = conn.cursor()
@@ -239,6 +293,16 @@ def buscar_candidato(conn):
     gestao_candidatos(conn)
 
 def listar_candidatos(conn):
+    """
+    Esta função consulta o banco de dados para obter uma lista de todos os candidatos registrados em um sistema eleitoral,
+    exibindo suas informações no console.
+
+    Args:
+        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console.
+    """
     try:
         time.sleep(0.5)
         cursor = conn.cursor()

@@ -1,6 +1,18 @@
 import mysql.connector
 
 def boletim_urna(conn):  # funcao que gera o boletim com os votos de todos os candidatos
+    """
+    Esta função consulta o banco de dados para obter o número total de votos para cada candidato,  
+    incluindo aqueles que não receberam votos, e exibe um boletim de urna formatado. 
+    Em seguida, ela identifica o candidato com o maior número de votos e exibe seus detalhes como vencedor.
+
+    Args:
+        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: A função não retorna nenhum valor, apenas exibe os resultados no console. 
+
+    """
     cursor = conn.cursor() 
 
     # consulta que busca todos os candidatos com seus respectivos votos (inclusive quem não recebeu votos)
@@ -43,6 +55,17 @@ def boletim_urna(conn):  # funcao que gera o boletim com os votos de todos os ca
 
 
 def estatistica_comparecimento(conn):  # funcao que calcula estatísticas de comparecimento dos eleitores
+    """
+    Esta função consulta o banco de dados para obter o número total de eleitores cadastrados e quantos deles votaram,
+    calculando o percentual de comparecimento. Em seguida, exibe essas informações formatadas no console.
+
+    Args:
+        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: A função não retorna nenhum valor, apenas exibe os resultados no console.
+
+    """
     cursor = conn.cursor()
 
     # busca o total de eleitores cadastrados
@@ -69,6 +92,17 @@ def estatistica_comparecimento(conn):  # funcao que calcula estatísticas de com
 
 
 def votos_por_partido(conn):  # funcao que mostra a quantidade total de votos agrupados por partido
+    """
+    Esta função consulta o banco de dados para obter o número total de votos agrupados por partido,
+    incluindo partidos que não receberam votos, e exibe essas informações formatadas no console.
+
+    Args:
+        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: A função não retorna nenhum valor, apenas exibe os resultados no console.
+
+    """
     cursor = conn.cursor()
 
     # consulta que agrupa os votos por partido
@@ -90,6 +124,18 @@ def votos_por_partido(conn):  # funcao que mostra a quantidade total de votos ag
 
 
 def validacao_integridade(conn):  # funcao que verifica se a quantidade de votos bate com a quantidade de eleitores que votaram
+    """
+    Esta função consulta o banco de dados para obter o número total de votos registrados
+    e o número total de eleitores que marcaram que votaram, comparando esses valores para verificar a integridade dos dados.
+    Em seguida, exibe os resultados e uma mensagem indicando se a integridade está OK ou se há um erro.
+
+    Args:
+        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: A função não retorna nenhum valor, apenas exibe os resultados no console.
+
+    """
     cursor = conn.cursor()
 
     # busca o total de votos registrados no sistema
