@@ -1,5 +1,3 @@
-import mysql.connector
-
 def boletim_urna(conn):  # funcao que gera o boletim com os votos de todos os candidatos
     """
     Esta função consulta o banco de dados para obter o número total de votos para cada candidato,  
