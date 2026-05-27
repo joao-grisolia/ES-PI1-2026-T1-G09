@@ -358,7 +358,7 @@ def auditoria_votacao(conn):
             os.system('cls')
             try:
                 cursor = conn.cursor()
-                cursor.execute('SELECT protocolo_criptografado FROM tabela_votos')
+                cursor.execute('SELECT protocolo_criptografado FROM tabela_votos ORDER BY protocolo_criptografado')
                 protocolos = cursor.fetchall()
                 cursor.close()
 

@@ -42,3 +42,13 @@ def validar_titulo_eleitor(titulo):
         return True
     else:
         return False
+
+def verificarTituloDeEleitorDuplicado(conn, tituloDeEleitor):
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM eleitores WHERE titulo_eleitor = %s", (tituloDeEleitor,))
+    if cursor.fetchone()[0] > 0:
+        print("\nTítulo de eleitor ja cadastrado")
+        input("Pressione ENTER para voltar.")
+        return True
+    else:
+        return False

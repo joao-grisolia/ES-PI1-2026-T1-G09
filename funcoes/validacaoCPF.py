@@ -1,3 +1,5 @@
+from funcoes.criptografia import criptografia
+
 #---------- Função para se obter os 4 primeiros dígitos do CPF ----------
 
 def primeiros_quatro_digitos(cpf):
@@ -95,3 +97,14 @@ def validar_cpf(cpf):
 
     # Se passou por todas as validações, o CPF é válido
     return True
+
+def verificarCpfDuplicado(conn ,cpf):
+    cursor = conn.cursor()
+    cpfCriptografado = criptografia(cpf)
+    cursor.execute("SELECT COUNT(*) FROM eleitores WHERE cpf_criptografado = %s", (cpfCriptografado,))
+    if cursor.fetchone()[0] > 0:
+        print("\nCPF ja cadastrado")
+        input("Pressione ENTER para voltar.")
+        return True
+    else:
+        return False

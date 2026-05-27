@@ -4,12 +4,18 @@ import menu.gerenciamento as gerenciamento
 import funcoes.criptografia as criptografia
 import mysql.connector
 from funcoes import ascii as ascii
-from database.conexao import conectar
 from funcoes.criptografia import criptografia
 from funcoes.descriptografia import descriptografia
 from funcoes.chaveDeAcesso import gerar_chave_acesso
-from funcoes.validacaoCPF import validar_cpf, limpar_cpf
-from funcoes.validacao_TituloEleitor import validar_titulo_eleitor
+from funcoes.validacaoCPF import (
+    validar_cpf,
+    limpar_cpf,
+    verificarCpfDuplicado
+)
+from funcoes.validacao_TituloEleitor import (
+    validar_titulo_eleitor,
+    verificarTituloDeEleitorDuplicado
+)
 
 def gestao_eleitores(conn):
     """
@@ -91,70 +97,21 @@ def cadastrar_eleitor(conn):
         cpf = str(input("Digite seu CPF: "))
 
     cpf = limpar_cpf(cpf)
-    print("CPF válido!")
-
-    cursor = conn.cursor()
-    verificarCpfDuplicado = criptografia(cpf)
-    try:
-        '''
-            pra verificar se ja tem cpf, eu to criptografando dnv o cpf que o cara digitou
-            ai executa o sql pra ver o seguinte:
-            "SELECT COUNT(*) FROM eleitores WHERE cpf_criptografado = %s", (verificarCpfDuplicado,)
-            ou seja
-            quantas linhas tem na tabela eleitores com o cpf criptografado igual ao cpf que o cara digitou 
-
-            se for 1 ou por algum motivo desconhecido maior que 1, entao ja tem um cpf igual no banco
-        '''
-        cursor.execute("SELECT COUNT(*) FROM eleitores WHERE cpf_criptografado = %s", (verificarCpfDuplicado,))
-        if cursor.fetchone()[0] > 0:
-            '''
-            entra no if, com isso oq o fetchone faz?
-            resumindo pega o resultado que o banco retornou
-            no caso o COUNT(*) contou da tabela eleitors quantos cpf iguais aquele que o cara digitou ele achou
-            
-            se o indice [0]  (oq o fetchone retorna) for maior que 0, entao ja existe no banco o cpf que a pessoa digitou
-            retorna erro e volta pro gestao_eleitores
-            '''
-            print("\nCPF ja cadastrado")
-            input("Pressione ENTER para voltar.")
-            gestao_eleitores(conn)
-            return
-    finally:
-        cursor.close()
+    if verificarCpfDuplicado(conn, cpf):
+        print('Voltando, aguarde...')
+        time.sleep(1.7)
+        gestao_eleitores(conn)
+        
 
     titulo_eleitor = str(input("Digite seu título de eleitor: "))
     while validar_titulo_eleitor(titulo_eleitor) == False:
         print("Título de eleitor inválido. Tente novamente:")
         titulo_eleitor = str(input("Digite seu título de eleitor: "))
-    print("Título válido!")
-
-    cursor = conn.cursor()
-    try:
-        '''
-            pra verificar se ja tem titulo,
-            executa o sql pra ver o seguinte:
-            "SELECT COUNT(*) FROM eleitores WHERE titulo_eleitor = %s", (titulo_eleitor,)
-            ou seja
-            quantas linhas tem na tabela eleitores com o titulo eleitor igual ao titulo que o cara digitou 
-
-            se for 1 ou por algum motivo desconhecido maior que 1, entao ja tem um titulo igual no banco
-        '''
-        cursor.execute("SELECT COUNT(*) FROM eleitores WHERE titulo_eleitor = %s", (titulo_eleitor,))
-        if cursor.fetchone()[0] > 0:
-            '''
-            entra no if, com isso oq o fetchone faz?
-            resumindo pega o resultado que o banco retornou
-            no caso o COUNT(*) contou da tabela eleitors quantos titulo iguais aquele que o cara digitou ele achou
-            
-            se o indice [0]  (oq o fetchone retorna) for maior que 0, entao ja existe no banco o titulo que a pessoa digitou
-            retorna erro e volta pro gestao_eleitores
-            '''
-            print("\nTítulo de eleitor ja cadastrado")
-            input("Pressione ENTER para voltar.")
-            gestao_eleitores(conn)
-            return
-    finally:
-        cursor.close()
+    
+    if verificarTituloDeEleitorDuplicado(conn, titulo_eleitor):
+        print('Voltando, aguarde...')
+        time.sleep(1.7)
+        gestao_eleitores(conn)
 
     n = 0
     while n!=1 and n!=2:
@@ -275,21 +232,15 @@ def editarEleitor(conn):
                         cpf = str(input("Digite o novo CPF para o eleitor: "))
                     cpf = limpar_cpf(cpf)
 
-                    # ---           ---#
-                    # CRIAR FUNCAO PARA VERIFICAR CPF DUPLICADO --------
-                    verificarCpfDuplicado = criptografia(cpf)
-                    try:
-                        cursor.execute("SELECT COUNT(*) FROM eleitores WHERE cpf_criptografado = %s", (verificarCpfDuplicado,))
-                        if cursor.fetchone()[0] > 0:
-                            print("\nCPF ja cadastrado")
-                            input("Pressione ENTER para voltar.")
-                            gestao_eleitores(conn)
-                    finally:
+                    if verificarCpfDuplicado(conn, cpf):
+                        print('Voltando, aguarde...')
+                        time.sleep(1.7)
+                        gestao_eleitores(conn)
+                    else:
                         values = (criptografia(cpf), eleitor[0])
                         sql = 'UPDATE eleitores SET cpf_criptografado = %s WHERE id = %s'
                         cursor.execute(sql, values)
                         cursor.close()
-                    # ---           ---#
 
                 case 3:
                     tituloDeEleitor = str(input("\nDigite o novo TITULO DE ELEITOR para o eleitor: "))
@@ -297,18 +248,16 @@ def editarEleitor(conn):
                         print("Título de eleitor inválido. Tente novamente:")
                         tituloDeEleitor = str(input("Digite o novo TITULO DE ELEITOR para o eleitor: "))
 
-                    try:
-                        cursor.execute("SELECT COUNT(*) FROM eleitores WHERE titulo_eleitor = %s", (tituloDeEleitor,))
-                        if cursor.fetchone()[0] > 0:
-                            print("\nTítulo de eleitor ja cadastrado")
-                            input("Pressione ENTER para voltar.")
-                            gestao_eleitores(conn)
-                            return
-                    finally:
+                    if verificarTituloDeEleitorDuplicado(conn, tituloDeEleitor):
+                        print('Voltando, aguarde...')
+                        time.sleep(1.7)
+                        gestao_eleitores(conn)
+                    else:
                         values = (tituloDeEleitor, eleitor[0])
                         sql = 'UPDATE eleitores SET titulo_eleitor = %s WHERE id = %s'
                         cursor.execute(sql, values)
                         cursor.close()
+                        
                 
                 case 4:
                     if eleitor[5] == 0:
