@@ -125,17 +125,30 @@ def menu_urnaFechada(conn):
                 
                 if (n == 1):
                     os.system('cls')
-                    if login(conn):
-                        statusMesario.abrirMesario(conn)
-                        registrar_log( 
-                            "ABERTURA",        
-                            "Votação iniciada com sucesso. Total de votos zerado.")
+                    confirmacao = input("Deseja mesmo abrir a urna? (s/n): ")
+                    if confirmacao.lower() == 'n':
+                        print("Abertura da urna cancelada!")
                         input("Pressione ENTER para voltar.")
-                        return votacao(conn)
+                        return menu_urnaFechada(conn)
+                    
+                    elif confirmacao.lower() == 's':
+                        print("Dupla confirmação: Digite novamente sua chave de acesso para abrir a urna.")
+                        if ConfirmarChaveMesario(conn):
+                            statusMesario.abrirMesario(conn)
+                            registrar_log( 
+                                "ABERTURA",        
+                                "Votação iniciada com sucesso. Total de votos zerado.")
+                            input("Pressione ENTER para voltar.")
+                            return votacao(conn)
+
+                        else:
+                            registrar_log("ALERTA", "Tentativa de acesso negado")
+                            print("Chave de acesso invalida! Tente novamente.")
+                            input("Pressione ENTER para voltar")
+                            return menu_urnaFechada(conn)
                     else:
-                        registrar_log("ALERTA", "Tentativa de acesso negado")
-                        print("Chave de acesso invalida! Tente novamente.")
-                        input("Pressione ENTER para voltar")
+                        print("Opção inválida. Retornando ao menu da urna.")
+                        input("Pressione ENTER para continuar.")
                         return menu_urnaFechada(conn)
                     
                 elif (n == 2):
