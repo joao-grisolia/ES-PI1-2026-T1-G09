@@ -2,13 +2,13 @@ import os
 import random
 import string
 import time
+import mysql.connector
 from funcoes import ascii
+from datetime import datetime
 from funcoes.criptografia import criptografia
+from funcoes.log_ocorrencia import registrar_log  
 from funcoes.descriptografia import descriptografia
 from funcoes.validacaoCPF import limpar_cpf, primeiros_quatro_digitos
-import mysql.connector
-from datetime import datetime
-from funcoes.log_ocorrencia import registrar_log  
 
 
 '''
@@ -59,6 +59,46 @@ def login(conn):
             if primeiros_quatro_digitos(cpf_descriptografado) == cpf:
                 return eleitor[0]  # id do eleitor
 
+    except ValueError:
+        print("Erro. Tente novamente.")
+        return login(conn) # Em caso de erro, retorna pra função novamente
+    
+    finally: # Quando tudo acima terminar
+        cursor.close() # Fecha o cursor
+
+def loginMesario(conn):
+    try:
+        time.sleep(0.5)
+        
+        cursor = conn.cursor() # Cria um cursor pra fazer as mudanças
+
+        cpf = str(input("Digite os 4 primeiros dígitos do CPF: "))
+        while not cpf.isdigit() or len(cpf) != 4:
+            registrar_log("ALERTA", "Tentativa de acesso negado")
+            print("Digite exatamente 4 números.")
+            cpf = input("Digite os 4 primeiros dígitos do CPF: ")
+        cpf = limpar_cpf(cpf)
+
+        titulo = str(input("Digite seu título de eleitor: "))
+
+        chave = str(input("Digite a chave de acesso: "))
+        chave = criptografia(chave) # Criptografa a chave
+
+        cursor.execute('''
+            SELECT id 
+            FROM eleitores 
+            WHERE chave_acesso = %s 
+            AND titulo_eleitor = %s
+            AND mesario = 1
+            ''', (chave, titulo))
+        
+        resultado = cursor.fetchall()
+        
+        for eleitor in resultado:
+            cpf_descriptografado = descriptografia(eleitor[1])
+            if primeiros_quatro_digitos(cpf_descriptografado) == cpf:
+                return eleitor[0]
+            
     except ValueError:
         print("Erro. Tente novamente.")
         return login(conn) # Em caso de erro, retorna pra função novamente

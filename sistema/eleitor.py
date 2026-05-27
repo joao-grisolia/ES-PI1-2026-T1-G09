@@ -1,19 +1,15 @@
 import os
 import time
 import menu.gerenciamento as gerenciamento
-from funcoes.chaveDeAcesso import gerar_chave_acesso
 import funcoes.criptografia as criptografia
-from funcoes.descriptografia import descriptografia
-from funcoes import ascii as ascii
-from funcoes.validacaoCPF import primeiros_quatro_digitos
-from database.conexao import conectar
 import mysql.connector
+from funcoes import ascii as ascii
+from database.conexao import conectar
 from funcoes.criptografia import criptografia
+from funcoes.descriptografia import descriptografia
+from funcoes.chaveDeAcesso import gerar_chave_acesso
 from funcoes.validacaoCPF import validar_cpf, limpar_cpf
 from funcoes.validacao_TituloEleitor import validar_titulo_eleitor
-
-conexao = conectar()
-cursor = conexao.cursor()
 
 def gestao_eleitores(conn):
     """
@@ -47,7 +43,7 @@ def gestao_eleitores(conn):
         if (n == 1):
             cadastrar_eleitor(conn)
         elif (n == 2):
-            editar_remover_eleitor(conn)
+            editarEleitor(conn)
         elif (n == 3):
             buscar_eleitores(conn)
             input("\nPressione ENTER para voltar.")
@@ -206,7 +202,7 @@ def cadastrar_eleitor(conn):
         input("\nPressione ENTER para voltar.")
         gestao_eleitores(conn)
 
-def editar_remover_eleitor(conn):
+def editarEleitor(conn):
     """
     Esta função permite editar as informações de um eleitor existente no sistema. O usuário é solicitado a fornecer o nome completo do eleitor que deseja editar,
     e a função consulta o banco de dados MySQL para encontrar um eleitor com o nome correspondente. 
@@ -222,24 +218,119 @@ def editar_remover_eleitor(conn):
     os.system('cls')
     time.sleep(0.5)
     cursor = conn.cursor()
-    nome = str(input("Digite o nome completo do eleitor que deseja editar: "))
-    sql = 'SELECT * FROM eleitores'
-    cursor.execute(sql)
+    cpf = str(input("\nDigite o CPF do eleitor: ")).strip()
+    
+
+    while not validar_cpf(cpf):
+        print("CPF inválido. Tente novamente.")
+        cpf = str(input("Digite o CPF do eleitor: "))
+    cpf = limpar_cpf(cpf)
+    cpf_criptografado = criptografia(cpf)
+    
+    cursor.execute('''SELECT * 
+            FROM eleitores
+            WHERE cpf_criptografado = %s
+            ''', (cpf_criptografado,))
     result = cursor.fetchall()
+    
+    print('Buscando eleitor, aguarde...')
+    time.sleep(1.7)
 
     encontrado = False
 
     for eleitor in result:
-        if nome == eleitor[2]:
+        if cpf_criptografado == eleitor[4]:
             encontrado = True
-
+            
             print("\nEleitor encontrado!")
+            for eleitor in result:
+                cpf_descriptografado = (descriptografia(str(eleitor[4])))
+                chave_descriptografada = (descriptografia(str(eleitor[1])))
+                cpf_descriptografado = cpf_descriptografado[:11]
+                chave_descriptografada = chave_descriptografada[:7]
+                print(f"Nome: {eleitor[2]} |", f"Chave de acesso: {chave_descriptografada} |", f"Título de eleitor: {eleitor[3]} |", f"CPF: {cpf_descriptografado} |", f"Mesário: {eleitor[5]}")
 
-            nome = str(input("Digite o novo nome para o candidato: "))
-            sql = 'UPDATE eleitores SET nome_completo = %s WHERE id = %s'
-            values = (nome, eleitor[0])
+            print('''
+                    Qual informação deseja alterar:\n
+                        1. NOME
+                        2. CPF
+                        3. TITULO DE ELEITOR
+                        4. STATUS MESARIO
+                        5. VOLTAR
+                ''')
+            opcao = int(input('-> '))
+            
+            match opcao:
+                case 1:
+                    nome = str(input("\nDigite o novo NOME para o eleitor: "))
+                    sql = 'UPDATE eleitores SET nome_completo = %s WHERE id = %s'
+                    values = (nome, eleitor[0])
+                    cursor.execute(sql, values)
+                
+                case 2:
+                    cpf = str(input("\nDigite o novo CPF para o eleitor: "))
+                    
+                    while not validar_cpf(cpf):
+                        print("CPF inválido. Tente novamente.")
+                        cpf = str(input("Digite o novo CPF para o eleitor: "))
+                    cpf = limpar_cpf(cpf)
 
-            cursor.execute(sql, values)
+                    # ---           ---#
+                    # CRIAR FUNCAO PARA VERIFICAR CPF DUPLICADO --------
+                    verificarCpfDuplicado = criptografia(cpf)
+                    try:
+                        cursor.execute("SELECT COUNT(*) FROM eleitores WHERE cpf_criptografado = %s", (verificarCpfDuplicado,))
+                        if cursor.fetchone()[0] > 0:
+                            print("\nCPF ja cadastrado")
+                            input("Pressione ENTER para voltar.")
+                            gestao_eleitores(conn)
+                    finally:
+                        values = (criptografia(cpf), eleitor[0])
+                        sql = 'UPDATE eleitores SET cpf_criptografado = %s WHERE id = %s'
+                        cursor.execute(sql, values)
+                        cursor.close()
+                    # ---           ---#
+
+                case 3:
+                    tituloDeEleitor = str(input("\nDigite o novo TITULO DE ELEITOR para o eleitor: "))
+                    while validar_titulo_eleitor(tituloDeEleitor) == False:
+                        print("Título de eleitor inválido. Tente novamente:")
+                        tituloDeEleitor = str(input("Digite o novo TITULO DE ELEITOR para o eleitor: "))
+
+                    try:
+                        cursor.execute("SELECT COUNT(*) FROM eleitores WHERE titulo_eleitor = %s", (tituloDeEleitor,))
+                        if cursor.fetchone()[0] > 0:
+                            print("\nTítulo de eleitor ja cadastrado")
+                            input("Pressione ENTER para voltar.")
+                            gestao_eleitores(conn)
+                            return
+                    finally:
+                        values = (tituloDeEleitor, eleitor[0])
+                        sql = 'UPDATE eleitores SET titulo_eleitor = %s WHERE id = %s'
+                        cursor.execute(sql, values)
+                        cursor.close()
+                
+                case 4:
+                    if eleitor[5] == 0:
+                        print(f'\nDeseja COLOCAR {eleitor[2]} como MESÁRIO? (s/n)')
+                    else:
+                        print(f'\nDeseja REMOVER {eleitor[2]} como MESÁRIO? (s/n)')
+
+                    opcao = str(input('-> ')).strip().lower()
+                    while opcao not in ('s', 'sim', 'n', 'não', 'nao'):
+                        print('Digite somente SIM ou NAO')
+                        opcao = str(input('-> ')).strip().lower()
+
+                    if opcao in ('s', 'sim'):
+                        novo_status = 1 if eleitor[5] == 0 else 0
+                        cursor.execute('UPDATE eleitores SET mesario = %s WHERE id = %s', (novo_status, eleitor[0]))
+                    else:
+                        print('Alteração de status de mesario CANCELADA')
+                        print('Voltando, aguarde...')
+                        time.sleep(2.2)
+                        gestao_eleitores(conn)
+                    
+                    
             conn.commit()
 
             print('Alterando eleitor, aguarde...')
@@ -254,8 +345,8 @@ def editar_remover_eleitor(conn):
 
 def buscar_eleitores(conn):
     """
-        Esta função permite buscar eleitores no sistema com base em um nome fornecido pelo usuário. 
-        Ela consulta o banco de dados MySQL para encontrar eleitores cujo nome completo contenha a string de busca,
+        Esta função permite buscar eleitores no sistema com base no CPF ou Titulo de eleitor. 
+        Ela consulta o banco de dados MySQL para encontrar eleitores cujo CPF ou Titulo de eleitor contenham no banco de dados,
         e exibe os resultados formatados no console.
 
         Args:
@@ -267,16 +358,63 @@ def buscar_eleitores(conn):
     """
     os.system('cls')
     time.sleep(0.5)
+    
     cursor = conn.cursor()
     
-    nome = str(input("\nDigite o nome do eleitor: ")).strip()
-    sql = "SELECT * FROM eleitores WHERE LOWER(nome_completo) LIKE %s"
-    cursor.execute(sql, ('%' + nome.lower() + '%',))
-    result = cursor.fetchall()
+    print('''\nDeseja buscar o eleitor por CPF ou Titulo:\n
+            1. CPF
+            2. Título de Eleitor
+            3. Voltar
+          ''')
+    
+    n = int(input("-> "))
+    
+    while n!=1 and n!=2:
+        print('''\nOpção inválida. Digite:\n
+            1. CPF
+            2. Título de Eleitor
+            3. Voltar
+        ''')
+        n = int(input('-> '))
+    
+    if n == 1:
+        cpf = str(input("\nDigite o CPF do eleitor: ")).strip()
+
+        while not validar_cpf(cpf):
+            print("CPF inválido. Tente novamente.")
+            cpf = str(input("Digite o CPF do eleitor: "))
+        cpf_criptografado = criptografia(cpf)
+        
+        cursor.execute('''SELECT * 
+                FROM eleitores
+                WHERE cpf_criptografado = %s
+                ''', (cpf_criptografado,))
+        result = cursor.fetchall()
+    
+    elif n == 2:
+        titulo = str(input('\nDigite o Titulo de eleitor: '))
+        
+        while not validar_titulo_eleitor(titulo):
+            print('Titulo de eleitor invalido. Tente novamente')
+            titulo = int(input('Digite o Titulo de eleitor: '))
+        
+        cursor.execute('''SELECT * 
+                FROM eleitores
+                WHERE titulo_eleitor = %s
+                ''', (titulo,))
+        result = cursor.fetchall()
+    
+    elif n ==3:
+        gestao_eleitores()
+    
+    # ---           --- #
+    
     print('Buscando eleitores, aguarde...')
     time.sleep(1.7)
+    
     print("\nEleitores encontrados:\n")
     print('-' * 150)
+    
     for eleitor in result:
         cpf_descriptografado = (descriptografia(str(eleitor[4])))
         chave_descriptografada = (descriptografia(str(eleitor[1])))
