@@ -200,12 +200,11 @@ def editarEleitor(conn):
             encontrado = True
             
             print("\nEleitor encontrado!")
-            for eleitor in result:
-                cpf_descriptografado = (descriptografia(str(eleitor[4])))
-                chave_descriptografada = (descriptografia(str(eleitor[1])))
-                cpf_descriptografado = cpf_descriptografado[:11]
-                chave_descriptografada = chave_descriptografada[:7]
-                print(f"Nome: {eleitor[2]} |", f"Chave de acesso: {chave_descriptografada} |", f"Título de eleitor: {eleitor[3]} |", f"CPF: {cpf_descriptografado} |", f"Mesário: {eleitor[5]}")
+            cpf_descriptografado = (descriptografia(str(eleitor[4])))
+            chave_descriptografada = (descriptografia(str(eleitor[1])))
+            cpf_descriptografado = cpf_descriptografado[:11]
+            chave_descriptografada = chave_descriptografada[:7]
+            print(f"Nome: {eleitor[2]} |", f"Chave de acesso: {chave_descriptografada} |", f"Título de eleitor: {eleitor[3]} |", f"CPF: {cpf_descriptografado} |", f"Mesário: {eleitor[5]}")
 
             print('''
                     Qual informação deseja alterar:\n
@@ -318,7 +317,7 @@ def buscar_eleitores(conn):
     
     n = int(input("-> "))
     
-    while n!=1 and n!=2:
+    while n!=1 and n!=2 and n!=3:
         print('''\nOpção inválida. Digite:\n
             1. CPF
             2. Título de Eleitor
@@ -354,7 +353,7 @@ def buscar_eleitores(conn):
         result = cursor.fetchall()
     
     elif n ==3:
-        gestao_eleitores()
+        gestao_eleitores(conn)
     
     # ---           --- #
     

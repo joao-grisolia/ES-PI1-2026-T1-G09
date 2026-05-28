@@ -85,7 +85,7 @@ def loginMesario(conn):
         chave = criptografia(chave) # Criptografa a chave
 
         cursor.execute('''
-            SELECT id 
+            SELECT id, cpf_criptografado
             FROM eleitores 
             WHERE chave_acesso = %s 
             AND titulo_eleitor = %s

@@ -56,6 +56,24 @@ def gestao_candidatos(conn):
                 input("\nPressione ENTER para continuar.")
                 gestao_candidatos(conn)
 
+def verificarNumCadidato(conn, numCandidato):
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+                    SELECT COUNT(*)
+                    FROM candidatos
+                    WHERE numero_votacao = %s
+                    ''', (numCandidato,))
+        if cursor.fetchone()[0] > 0:
+            print('Já existe um candidato com esse número')
+            input("Pressione ENTER para voltar.")
+            return True
+        else:
+            return False
+    finally:
+        cursor.close()
+
+
 # implementar a verificação para não adicionar
 # um candidato com o mesmo número e partido...
 def cadastrar_candidato(conn):
@@ -78,6 +96,10 @@ def cadastrar_candidato(conn):
         time.sleep(0.5)
         name = str(input('Digite o nome do candidato: '))
         number = int(input('Digite o número do candidato: '))
+        if verificarNumCadidato(conn, number):
+            print('Voltando, aguarde...')
+            time.sleep(1.7)
+            return
         partido = str(input('Digite o partido do candidato: '))
         
         fotoASCII = str(input('Deseja adicionar foto ASCII para o candidato (s/n): ')).lower()
@@ -175,6 +197,8 @@ def cadastrar_candidato(conn):
 
     gestao_candidatos(conn)
 
+
+
 def editar_candidato(conn):
     """
     Esta função permite ao usuário editar as informações de um candidato existente em um sistema eleitoral.
@@ -242,7 +266,7 @@ def editar_candidato(conn):
 
 def buscar_candidato(conn):
     """
-        Esta função permite ao usuário buscar um candidato específico em um sistema eleitoral, utilizando o número do partido como critério de busca.
+        Esta função permite ao usuário buscar um candidato específico em um sistema eleitoral, utilizando o número candidato como critério de busca.
         O usuário é solicitado a inserir o número do partido do candidato que deseja encontrar.
         A função então consulta o banco de dados MySQL para obter uma lista de todos os candidatos 
         e verifica se algum deles possui o número de partido correspondente.
@@ -260,7 +284,7 @@ def buscar_candidato(conn):
     try:
         time.sleep(0.5)
         cursor = conn.cursor()
-        numeroPartido = int(input("\nDigite o numero do partido do candidato: "))
+        numeroPartido = int(input("\nDigite o numero do candidato: "))
         sql = 'SELECT * FROM candidatos'
         cursor.execute(sql)
         result = cursor.fetchall()
@@ -321,6 +345,6 @@ def listar_candidatos(conn):
         cursor.close()
 
 
-
+    
 
 
