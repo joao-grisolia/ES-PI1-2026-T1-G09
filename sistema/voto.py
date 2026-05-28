@@ -159,6 +159,7 @@ def adicionar_voto(eleitor_id, conn): # Criação de uma função com um parâme
         time.sleep(0.5)
         cursor = conn.cursor() # Cria um cursor para modificação no banco
         id_candidato = None
+        voto_nulo = False
 
         while not id_candidato:
             os.system('cls')
@@ -175,24 +176,39 @@ def adicionar_voto(eleitor_id, conn): # Criação de uma função com um parâme
             else:
                 ascii.votacaoASCII()
                 input("Candidato inválido.")
+                n = str(input("Deseja confirmar seu voto nulo? (S/N) -> ")).lower()
+
+                while n != "s" and n != "n":
+                    print("Digite apenas 's' ou 'n'")
+                    n = input("Deseja confirmar seu voto? (S/N) -> ").lower()
+
+                if n == "s":
+                    voto_nulo = True
+                    break
                 continue
 
-        sql = 'SELECT nome_completo, numero_votacao, nome_partido, foto_ascii FROM candidatos WHERE numero_votacao = %s'
-        cursor.execute(sql,(voto,))
+        if not voto_nulo:
+            sql = 'SELECT nome_completo, numero_votacao, nome_partido, foto_ascii FROM candidatos WHERE numero_votacao = %s'
+            cursor.execute(sql,(voto,))
 
-        resultado = cursor.fetchone()
-        if resultado:
-            if resultado[3]:
-                try:
-                    with open(resultado[3], 'r', encoding='utf-8') as f:
-                        print(f.read())
-                except:
-                    print('Erro ao carregar ASCII')
-            else:
-                print('Sem Imagem')
-            print(f"Nome: {resultado[0]}")
-            print(f"Número: {resultado[1]}")
-            print(f"Partido: {resultado[2]}")
+            resultado = cursor.fetchone()
+
+            if resultado:
+                if resultado[3]:
+                    try:
+                        with open(resultado[3], 'r', encoding='utf-8') as f:
+                            print(f.read())
+                    except:
+                        print('Erro ao carregar ASCII')
+                else:
+                    print('Sem Imagem')
+
+                print(f"Nome: {resultado[0]}")
+                print(f"Número: {resultado[1]}")
+                print(f"Partido: {resultado[2]}")
+
+        else:
+            print("VOTO NULO")
 
         n = str(input("Deseja confirmar seu voto no seguinte candidato? (S/N) -> ")).lower()
 
@@ -233,7 +249,9 @@ def adicionar_voto(eleitor_id, conn): # Criação de uma função com um parâme
             cursor.execute('''
                 INSERT into tabela_votos (id_candidato, data_hora_voto, protocolo_criptografado)
                 VALUES (%s, %s, %s)
-                        ''', (id_candidato, data_atual, protocolo_criptografado)) # Insere no banco as informações de votação
+                        ''', (None if voto_nulo else id_candidato,
+                            data_atual,
+                            protocolo_criptografado)) # Insere no banco as informações de votação
             
             conn.commit() # Comita tudo
 

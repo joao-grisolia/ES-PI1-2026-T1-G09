@@ -21,13 +21,23 @@ def boletim_urna(conn):  # funcao que gera o boletim com os votos de todos os ca
         GROUP BY c.id
         ORDER BY c.nome_completo ASC
     """)
-
     resultados = cursor.fetchall()  # armazena todos os resultados da consulta
+
+    #consulta que para aparecer junto da outra os votos nulos da tabela tabela_votos, para mostrar o total de votos nulos no boletim de urna
+    cursor.execute("""
+        SELECT id_candidato, COUNT(*) as total
+        FROM tabela_votos
+        WHERE id_candidato IS NULL
+    """)
+
 
     # percorre os resultados e exibe o boletim de urna formatado
     print("\n--- BOLETIM DE URNA ---")
     for nome, numero, partido, total in resultados:
         print(f"{nome} | Nº {numero} | {partido} | Votos: {total}")
+    for id_candidato, total in cursor.fetchall():
+        if id_candidato is None:  # verifica se o id_candidato é nulo, indicando votos nulos
+            print(f"Votos Nulos: {total}")
 
     # consulta para obter apenas o candidato com maior número de votos (vencedor)
     cursor.execute("""
