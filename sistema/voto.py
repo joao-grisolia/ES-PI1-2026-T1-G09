@@ -1,6 +1,5 @@
 import os
 import random
-import string
 import time
 import mysql.connector
 from funcoes import ascii
@@ -220,17 +219,24 @@ def adicionar_voto(eleitor_id, conn): # Criação de uma função com um parâme
             data_atual = datetime.now() # Pega a data atual
 
             #Criação do protocolo de votação
-            letra1 = random.choice(string.ascii_uppercase) # Gera uma letra maiúscula aleatória
-            letra2 = random.choice(string.ascii_uppercase) # Gera uma letra maiúscula aleatória
-            num1 = random.choice (string.digits) # Gera um número aleatório
-            num2 = random.choice (string.digits) # Gera um número aleatório
-            num3 = random.choice (string.digits) # Gera um número aleatório
-            num4 = random.choice (string.digits) # Gera um número aleatório
-            num5 = random.choice (string.digits) # Gera um número aleatório
+            LetrasMaiusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            digitos = "0123456789"
+
+            letra1 = random.choice(LetrasMaiusculas) # Gera uma letra maiúscula aleatória
+            letra2 = random.choice(LetrasMaiusculas) # Gera uma letra maiúscula aleatória
+            num1 = random.choice (digitos) # Gera um número aleatório
+            num2 = random.choice (digitos) # Gera um número aleatório
+            num3 = random.choice (digitos) # Gera um número aleatório
+            num4 = random.choice (digitos) # Gera um número aleatório
+            num5 = random.choice (digitos) # Gera um número aleatório
 
             ano = "26" # Define o ano como 2026
-            numero_candidato = str(voto) # Converte o número do candidato para string   
 
+            if voto < 10: 
+                numero_candidato = "0" + str(voto)#Adiciona um 0 caso o numero do candidato seja menor que 10
+            else:
+                numero_candidato = str(voto)# Converte o número do candidato para string
+           
             protocolo = (
                 "V" +
                 letra1 +
