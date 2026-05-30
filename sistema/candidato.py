@@ -370,13 +370,15 @@ def listar_candidatos(conn):
         cursor.execute(sql)
         result = cursor.fetchall()
 
-        print('Cadastrando candidato, aguarde...')
+        print('Listando candidatos, aguarde...')
         time.sleep(1.7)
         print("\nCandidatos cadastrados:\n")
-        print('-' * 120)
+        print('-' * 70)
+        print(f'{"NOME:":30} | {"NÚMERO:":8} | {"PARTIDO:":20}')
+        print('-' * 70)
         for candidato in result:
-            print(f"Nome: {candidato[1]} | Número: {candidato[2]} | Partido: {candidato[3]}")
-        print('-' * 120)
+            print(f"{candidato[1]:30} | {candidato[2]:8} | {candidato[3]:12}")
+        print('-' * 70)
     finally:
         cursor.close()
 

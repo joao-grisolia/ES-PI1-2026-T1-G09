@@ -37,7 +37,7 @@ CREATE TABLE registro_logs (
 
 CREATE TABLE tabela_votos (
 	id_voto INT PRIMARY KEY AUTO_INCREMENT,
-    id_candidato INT NOT NULL,
+    id_candidato INT NULL,
     data_hora_voto DATETIME NOT NULL,
     protocolo_criptografado VARCHAR(30) NOT NULL,
     FOREIGN KEY (id_candidato) REFERENCES candidatos(id)

@@ -455,13 +455,17 @@ def listar_eleitores(conn):
     print('Listando eleitores, aguarde...')
     time.sleep(1.7)
     print("Lista de eleitores:")
-    print('-' * 150)
+    print('-' * 90)
+    print(f"{'NOME':30} {'CHAVE':8} {'TÍTULO':14} {'CPF':12} {'MESÁRIO':8} {'VOTOU':6}")
+    print('-' * 90)
+    if not result:
+        print('Nenhum eleitor cadastrado.')
     for eleitor in result:
-        cpf_descriptografado = (descriptografia(str(eleitor[4])))
-        chave_descriptografada = (descriptografia(str(eleitor[1])))
-        cpf_descriptografado = cpf_descriptografado[:11]
-        chave_descriptografada = chave_descriptografada[:7]
-        print(f"Nome Completo: {eleitor[2]} | Chave de Acesso: {chave_descriptografada} | Título de Eleitor: {eleitor[3]} | CPF: {cpf_descriptografado} | Mesário: {eleitor[5]} | Status do Voto: {eleitor[6]}")
-    print('-' * 150)
+        cpf_descriptografado = descriptografia(str(eleitor[4]))[:11]
+        chave_descriptografada = descriptografia(str(eleitor[1]))[:7]
+        mesario = 'Sim' if eleitor[5] == 1 else 'Não'
+        status_voto = 'Sim' if eleitor[6] == 1 else 'Não'
+        print(f"{eleitor[2]:30} {chave_descriptografada:8} {eleitor[3]:14} {cpf_descriptografado:12} {mesario:8} {status_voto:6}")
+    print('-' * 90)
 
 

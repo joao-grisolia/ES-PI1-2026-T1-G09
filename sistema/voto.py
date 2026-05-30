@@ -204,8 +204,8 @@ def adicionar_voto(eleitor_id, conn): # Criação de uma função com um parâme
                 id_candidato = id_candidato[0] # Extrai o valor id do candidato da tupla
             else:
                 ascii.votacaoASCII()
-                input("Candidato inválido.")
-                n = str(input("Deseja confirmar seu voto nulo? (S/N) -> ")).lower()
+                print("Não existe nenhum candidato com esse número.")
+                n = str(input("Deseja confirmar seu voto como nulo? (S/N) -> ")).lower()
 
                 while n != "s" and n != "n":
                     print("Digite apenas 's' ou 'n'")
@@ -214,6 +214,10 @@ def adicionar_voto(eleitor_id, conn): # Criação de uma função com um parâme
                 if n == "s":
                     voto_nulo = True
                     break
+                else:
+                    print('Seu voto NÃO sera computado.')
+                    print('Voltando, aguarde...')
+                    time.sleep(1.7)
                 continue
 
         if not voto_nulo:
@@ -239,7 +243,8 @@ def adicionar_voto(eleitor_id, conn): # Criação de uma função com um parâme
         else:
             print("VOTO NULO")
 
-        n = str(input("Deseja confirmar seu voto no seguinte candidato? (S/N) -> ")).lower()
+        if not voto_nulo:
+            n = str(input("Deseja confirmar seu voto no seguinte candidato? (S/N) -> ")).lower()
 
         while n != "s" and n != "n":
             print("Digite apenas 's' ou 'n'")

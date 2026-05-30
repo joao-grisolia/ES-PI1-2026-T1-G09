@@ -28,6 +28,7 @@ def boletim_urna(conn):  # funcao que gera o boletim com os votos de todos os ca
         SELECT id_candidato, COUNT(*) as total
         FROM tabela_votos
         WHERE id_candidato IS NULL
+        GROUP BY id_candidato
     """)
 
 

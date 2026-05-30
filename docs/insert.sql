@@ -2,8 +2,8 @@
 USE projetoPI;
 INSERT INTO eleitores (chave_acesso, nome_completo, titulo_eleitor, cpf_criptografado, mesario, status_voto) 
 VALUES 
-('JOD1234', 'João do Grau', '123456789012', '12312312312', 0, 0),
-('DID4321', 'Diego Dançarino', '987654321012', '12345678910', 1, 0);
+('JOD1234', 'João do Grau', '811382110175', 'W99OX4QHP0Y0', 0, 0),
+('DID4321', 'Diego Dançarino', '731680040299', 'N3HRUR2GX4M2', 1, 0);
 SELECT * FROM eleitores;
 
 INSERT INTO candidatos (nome_completo, numero_votacao, nome_partido) 
