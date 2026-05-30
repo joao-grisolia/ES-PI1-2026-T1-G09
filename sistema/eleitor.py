@@ -26,7 +26,7 @@ def gestao_eleitores(conn):
             e inserir novos registros na tabela de eleitores.
 
             Args:
-                conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+                conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
 
             Returns:
                 None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console. 
@@ -81,7 +81,7 @@ def cadastrar_eleitor(conn):
     insere um novo registro na tabela de eleitores com as informações fornecidas.
 
     Args:
-        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
 
     Returns:
         None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console. 
@@ -167,7 +167,7 @@ def editarEleitor(conn):
     Se o eleitor for encontrado, o usuário pode inserir as novas informações, e a função atualiza o registro no banco de dados com as novas informações fornecidas.
 
     Args:
-        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
 
     Returns:
         None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console.
@@ -360,7 +360,7 @@ def buscar_eleitores(conn):
         e exibe os resultados formatados no console.
 
         Args:
-            conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+            conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
 
         Returns:
             None: A função não retorna nenhum valor, apenas exibe os resultados no console. 
@@ -439,7 +439,7 @@ def listar_eleitores(conn):
     Esta função consulta o banco de dados para obter uma lista de todos os eleitores registrados em um sistema eleitoral, exibindo suas informações no console.
 
     Args:
-        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
 
     Returns:
         None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console.

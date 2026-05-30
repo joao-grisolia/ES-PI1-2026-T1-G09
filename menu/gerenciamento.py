@@ -7,6 +7,18 @@ from funcoes import ascii
 
 
 def gerenciamento(conn):
+    '''
+    controla o menu de gerenciamento do sistema
+
+    permite acessar as funcionalidades de gestao de eleitores,
+    gestao de candidatos ou voltar ao menu principal
+
+    Args:
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: nao retorna nenhum valor
+    '''
     os.system('cls')
     time.sleep(0.5)
     ascii.gerenciamentoASCII()

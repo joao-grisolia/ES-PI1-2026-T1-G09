@@ -22,6 +22,8 @@ def validar_titulo_eleitor(titulo):
 
     if resto1 == 10:
         dv1 = 0
+    elif resto1 == 0 and uf in ('01', '02'):
+        dv1 = 1
     else:
         dv1 = resto1
 
@@ -32,6 +34,8 @@ def validar_titulo_eleitor(titulo):
 
     if resto2 == 10:
         dv2 = 0
+    elif resto2 == 0 and uf in ('01', '02'):
+        dv2 = 1
     else:
         dv2 = resto2
 

@@ -23,7 +23,7 @@ def login(conn):
     e verificando-as contra os registros armazenados em um banco de dados MySQL.
 
     Args:
-        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
 
     Returns:
         int: O ID do eleitor correspondente às credenciais fornecidas, caso o login seja bem-sucedido.
@@ -112,7 +112,7 @@ def verificar_voto(eleitor_id, conn): # Criação de uma função com um parâme
 
     Args:
         eleitor_id (int): O ID do eleitor cujo status do voto se deseja verificar.
-        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
 
     Returns:
         int: O status do voto do eleitor, caso o eleitor seja encontrado.
@@ -144,7 +144,7 @@ def verificar_voto_candidato(conn, id_candidato): # Criação de uma função pa
     Ela consulta o banco de dados para determinar se há registros de votos associados ao ID do candidato fornecido.
 
     Args:
-        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
         id_candidato (int): O ID do candidato para o qual se deseja verificar se recebeu votos. 
 
     Returns:
@@ -177,7 +177,7 @@ def adicionar_voto(eleitor_id, conn): # Criação de uma função com um parâme
 
     Args:
         eleitor_id (int): O ID do eleitor que deseja adicionar o voto.
-        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
 
     Returns:
         None: A função não retorna nenhum valor, mas realiza várias operações, como interagir com o usuário, consultar e modificar o banco de dados,

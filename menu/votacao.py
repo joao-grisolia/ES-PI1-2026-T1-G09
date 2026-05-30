@@ -12,6 +12,19 @@ from funcoes.log_ocorrencia import registrar_log, exibir_logs
 from funcoes.descriptografia import descriptografia
 
 def votacao(conn):
+    '''
+    controla o menu de votacao do sistema
+
+    verifica se a urna esta aberta ou fechada e exibe as opcoes disponiveis
+    para cada situacao, permitindo acessar o menu da urna, resultados,
+    auditoria ou voltar para o menu principal
+
+    Args:
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: nao retorna nenhum valor
+    '''
     os.system('cls')
     time.sleep(0.5)
     ascii.votacaoASCII()
@@ -80,6 +93,18 @@ def votacao(conn):
             return votacao(conn)
 
 def menu_urnaFechada(conn):
+    '''
+    controla o menu da urna quando ela esta fechada
+
+    permite consultar o status da urna, fazer o login do mesario
+    e abrir a urna faznedo a dupla confirmacao da chave de acesso
+
+    Args:
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: nao retorna nenhum valor
+    '''
     os.system('cls')
     print('''
             Menu da Urna
@@ -173,6 +198,18 @@ def menu_urnaFechada(conn):
         return menu_urnaFechada(conn)
 
 def menu_urnaAberta(conn):
+    '''
+    controla o menu da urna quando ela esta aberta
+
+    permite que os eleitores realizem a votacao, consultem o status da urna
+    e que os mesarios fechem a urna depois da autenticacao e dupla confirmacao
+
+    Args:
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: nao retorna nenhum valor
+    '''
     os.system('cls')
 
     print('''
@@ -291,6 +328,18 @@ def menu_urnaAberta(conn):
         print("\nOpção inválida. Tente novamente.")
 
 def resultados_votacao(conn):
+    '''
+    controla o menu de resultados da votacao
+
+    permite visualizar o boletim de urna, estatisticas,
+    votos por partido e fazer a validacao de integridade dos dados da eleicao
+
+    Args:
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: nao retorna nenhum valor
+    '''
     os.system('cls')
     n = 0
     while n!= 1 and n!= 2 and n!= 3 and n!= 4:
@@ -332,6 +381,18 @@ def resultados_votacao(conn):
             return votacao(conn)
 
 def auditoria_votacao(conn):
+    '''
+    controla o menu de auditoria da votacao
+
+    permite consultar os logs do sistema e visualizar os protocolos
+    registrados dos votos 
+
+    Args:
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        None: nao retorna nenhum valor
+    '''
     os.system('cls')
     n = 0
     while n!= 1 and n!= 2 and n!= 3:
@@ -383,6 +444,19 @@ def auditoria_votacao(conn):
             return votacao(conn)
 
 def ConfirmarChaveMesario(conn):
+    '''
+    solicita novamente a chave de acesso do mesario e verifica se ela e valida
+
+    realiza a criptografia da chave e consulta no banco 
+    para confirmar o mesario antes de execut ar os proximos passos
+
+    Args:
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
+
+    Returns:
+        int: retorna o valor do campo mesario caso a chave seja valida
+        ou None caso nao encontre nenhum registro
+    '''
     chave = input("Digite novamente a chave de acesso do mesário: ")
     chave_criptografada = criptografia(chave)
 

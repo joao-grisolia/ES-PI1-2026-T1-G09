@@ -11,7 +11,7 @@ def gestao_candidatos(conn):
             A função utiliza uma conexão ativa com um banco de dados MySQL para realizar as operações necessárias.
 
             Args:
-                conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+                conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
 
             Returns:
                 None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console. 
@@ -58,6 +58,17 @@ def gestao_candidatos(conn):
                 gestao_candidatos(conn)
 
 def verificarNumCadidato(conn, numCandidato):
+    '''
+    esta função verifica se ja tem um candidato cadastrado com o mesmo numero ja cadastrado
+    faz a consulta banco de dados se o número ja ta em uso, uma mensagem é exibida ao usuário.
+
+    Args:
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
+        numCandidato (int): Número de votação que será verificado.
+
+    Returns:
+        bool: retorna True caso se ja existe um candidato com o numero diitado e False caso contrário
+    '''
     cursor = conn.cursor()
     try:
         cursor.execute('''
@@ -85,7 +96,7 @@ def cadastrar_candidato(conn):
     insere os dados do candidato no banco de dados MySQL.
 
     Args:
-        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
 
     Returns:
         None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console. 
@@ -208,7 +219,7 @@ def editar_candidato(conn):
     A função então atualiza as informações do candidato no banco de dados MySQL.
 
     Args:
-        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
 
     Returns:
         None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console.  
@@ -316,7 +327,7 @@ def buscar_candidato(conn):
         uma mensagem informando que nenhum candidato foi encontrado é exibida.
 
         Args:
-            conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+            conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
 
         Returns:
             None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console.  
@@ -363,7 +374,7 @@ def listar_candidatos(conn):
     exibindo suas informações no console.
 
     Args:
-        conn (mysql.connector.connection_cext.CMySQLConnection): Conexão ativa com o banco de dados MySQL.
+        conn (mysql.connector): Conexão ativa com o banco de dados MySQL.
 
     Returns:
         None: A função não retorna nenhum valor, apenas exibe os resultados e interage com o usuário por meio do console.
