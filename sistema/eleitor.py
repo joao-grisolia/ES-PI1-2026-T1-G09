@@ -216,7 +216,10 @@ def editarEleitor(conn):
                     chave_descriptografada = (descriptografia(str(eleitor[1])))
                     cpf_descriptografado = cpf_descriptografado[:11]
                     chave_descriptografada = chave_descriptografada[:7]
-                    print(f"Nome: {eleitor[2]} |", f"Chave de acesso: {chave_descriptografada} |", f"Título de eleitor: {eleitor[3]} |", f"CPF: {cpf_descriptografado} |", f"Mesário: {eleitor[5]}")
+                    mesario = 'NAO'
+                    if eleitor[5] == 1:
+                        mesario = 'SIM'
+                    print(f"Nome: {eleitor[2]} |", f"Chave de acesso: {chave_descriptografada} |", f"Título de eleitor: {eleitor[3]} |", f"CPF: {cpf_descriptografado} |", f"Mesário: {mesario}")
 
                     n = str(input("\nDeseja editá-lo ou removê-lo? (e/r) ")).lower()
 
